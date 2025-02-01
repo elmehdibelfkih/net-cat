@@ -55,7 +55,7 @@ func (s *Server) acceptNewConnection() error {
 
 func (s *Server) handleConnection() {
 	var buf = make([]byte, 2048)
-	s.conn.Read(buf)
+	// conn, err := s.conn.Read(buf)
 	println(string(buf))
 	defer s.conn.Close()
 }
