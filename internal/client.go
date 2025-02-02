@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 	"time"
-	"unicode"
+	"unicode" // FIXME: replace
 )
 
 type Client struct {
