@@ -4,8 +4,8 @@ import (
 	"io"
 	"net"
 	"os"
+	"strings"
 	"time"
-	"unicode" // FIXME: replace
 )
 
 type Client struct {
@@ -42,6 +42,7 @@ func (cl *Client) handleInput() {
 		}
 	} else if cl.Message != "\n" {
 		cl.s.broadcastMessage(cl.conn)
+
 	} else {
 		cl.sendMessage(EMPTY_MESSAGE_ERROR)
 	}
@@ -79,20 +80,25 @@ func (cl *Client) FormatedMessage() string {
 }
 
 func (cl *Client) isValideName(name string) bool {
-	if len(cl.Name) > MAX_NAME_LEN {
+	if len(name) > MAX_NAME_LEN {
 		cl.sendMessage(TOO_LONG_NAME)
 		cl.Name = ""
 		return false
 	}
+
 	for _, c := range name {
-		if !unicode.IsLetter(c) && c != ' ' && c != '-' && c != '\'' {
+		if !(strings.ContainsRune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", c) ||
+			strings.ContainsRune(" -'", c)) {
 			cl.sendMessage(INVALID_NAME)
 			cl.Name = ""
 			return false
 		}
 	}
+
+	// Check if the name is unique
 	return cl.isUniqueName()
 }
+
 func (cl *Client) isUniqueName() bool {
 	for cn, clt := range cl.s.clients {
 		if cn != cl.conn && clt.Name == cl.Name {

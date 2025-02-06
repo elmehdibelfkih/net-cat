@@ -26,6 +26,7 @@ func (s *Server) StartServer() error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Listening on the port :", s.Addr)
 	defer ln.Close()
 	s.listener = ln
 	return s.acceptNewConnection()
@@ -61,7 +62,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 		if err != nil {
 			s.clients[conn].endConnection()
 			return
-		} else { // FIXME: handel long input
+		} else {
 			s.clients[conn].Message += string(buf[:byteReaded])
 			if strings.Contains(s.clients[conn].Message, "\n") {
 				s.clients[conn].isReady = true
@@ -69,6 +70,9 @@ func (s *Server) handleConnection(conn net.Conn) {
 		}
 		if s.clients[conn].isReady {
 			s.clients[conn].handleInput()
+			if s.clients[conn].Name != "" {
+				s.clients[conn].sendMessage(s.clients[conn].getPrefix())
+			}
 			s.clients[conn].Message = ""
 			s.clients[conn].isReady = false
 		}
@@ -79,15 +83,22 @@ func (s *Server) broadcastMessage(conn net.Conn) {
 	if !s.clients[conn].noPrefix {
 		fmt.Fprint(LOGS_FILE, s.clients[conn].FormatedMessage())
 	}
+	if len(s.clients[conn].Message) > MAX_LENGTH_MESSGE {
+		s.clients[conn].sendMessage(TOO_LONG_INPUT)
+		return
+	}
 	for cn, cl := range s.clients {
 		if cn != conn {
 			if cl.Authentication {
 				if s.clients[conn].noPrefix {
-					cl.sendMessage(s.clients[conn].Message)
+					cl.sendMessage("\n" + s.clients[conn].Message)
+					cl.sendMessage(cl.getPrefix())
 				} else {
-					cl.sendMessage(s.clients[conn].FormatedMessage())
+					cl.sendMessage("\n" + s.clients[conn].FormatedMessage())
+					cl.sendMessage(cl.getPrefix())
 				}
 			}
 		}
 	}
+
 }
