@@ -80,12 +80,12 @@ func (s *Server) handleConnection(conn net.Conn) {
 }
 
 func (s *Server) broadcastMessage(conn net.Conn) {
-	if !s.clients[conn].noPrefix {
-		fmt.Fprint(LOGS_FILE, s.clients[conn].FormatedMessage())
-	}
 	if len(s.clients[conn].Message) > MAX_LENGTH_MESSGE {
 		s.clients[conn].sendMessage(TOO_LONG_INPUT)
 		return
+	}
+	if !s.clients[conn].noPrefix {
+		fmt.Fprint(LOGS_FILE, s.clients[conn].FormatedMessage())
 	}
 	for cn, cl := range s.clients {
 		if cn != conn {

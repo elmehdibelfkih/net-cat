@@ -94,8 +94,6 @@ func (cl *Client) isValideName(name string) bool {
 			return false
 		}
 	}
-
-	// Check if the name is unique
 	return cl.isUniqueName()
 }
 
