@@ -14,8 +14,6 @@ const MAX_LENGTH_MESSGE = 256
 const LOGO_FILE_PATH = "./data/linux.logo"
 const FULL_SERVER_ERROR = "Oops! The server is currently full.\nKindly try again later.\n"
 const EMPTY_MESSAGE_ERROR = "Oops! It looks like you left the input field empty.\nplease enter some data.\n"
-
-// const TOO_LONG_INPUT = "Input exceeds the maxium length allowed.\n"
 const LOGS_FILE_PATH = "./data/logs.txt"
 const INVALID_NAME = "Invalid name, Please use only letters, spaces, hyphens, and apostrophes\n"
 const TOO_LONG_NAME = "Name is too long.\nMaximum allowed characters: 25\n"
