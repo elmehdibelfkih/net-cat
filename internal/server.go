@@ -53,7 +53,7 @@ func (s *Server) acceptNewConnection() error {
 
 func (s *Server) handleConnection(conn net.Conn) {
 	defer conn.Close()
-	var buf = make([]byte, 2048)
+	buf := make([]byte, 2048)
 	conn.Write(LINUX_LOGO)
 	conn.Write([]byte("[ENTER YOUR NAME]: "))
 	for {
@@ -85,7 +85,13 @@ func (s *Server) broadcastMessage(conn net.Conn) {
 		return
 	}
 	if !s.clients[conn].noPrefix {
-		fmt.Fprint(LOGS_FILE, s.clients[conn].FormatedMessage())
+		message := s.clients[conn].FormatedMessage()
+		err := MessageValid(message) // check if the message has esc characters
+		if err != nil {
+			s.clients[conn].sendMessage("you enterd a control charachter\n")
+			return
+		}
+		fmt.Fprint(LOGS_FILE, message)
 	}
 	for cn, cl := range s.clients {
 		if cn != conn {
@@ -100,5 +106,4 @@ func (s *Server) broadcastMessage(conn net.Conn) {
 			}
 		}
 	}
-
 }

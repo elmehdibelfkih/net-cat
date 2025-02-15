@@ -30,7 +30,7 @@ func SetUp() string {
 		addr = os.Args[1]
 	} else {
 		log.Fatal("[USAGE]: ./TCPChat $port")
-	}
+ 	}
 	tmp, err := os.ReadFile(LOGO_FILE_PATH)
 	if err != nil {
 		log.Fatal(err)

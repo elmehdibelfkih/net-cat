@@ -22,18 +22,18 @@ func (cl *Client) handleInput() {
 	if cl.Name == "" {
 		if cl.Message == "\n" {
 			cl.sendMessage(EMPTY_MESSAGE_ERROR)
-			cl.conn.Write([]byte("[ENTER YOUR NAME]: "))
+			cl.sendMessage("[ENTER YOUR NAME]: ")
 		} else {
-			cl.Name = cl.Message[:len(cl.Message)-1]
-			if !cl.isValideName(cl.Name) {
-				cl.conn.Write([]byte("[ENTER YOUR NAME]: "))
+			cl.Name = cl.Message[:len(cl.Message)-1] // exclude new line
+			if !cl.isValideName(cl.Name) {           // check the name validity
+				cl.sendMessage("[ENTER YOUR NAME]: ")
 				return
 			}
 			cl.Message = ""
 			cl.Authentication = true
 			cl.noPrefix = true
 			cl.Message = cl.Name + " has joinned our chat...\n"
-			cl.s.broadcastMessage(cl.conn)
+			cl.s.broadcastMessage(cl.conn) // informe the other users that a user has joined the chat
 			cl.noPrefix = false
 			data, err := os.ReadFile(LOGS_FILE_PATH)
 			if err == nil {
@@ -42,7 +42,6 @@ func (cl *Client) handleInput() {
 		}
 	} else if cl.Message != "\n" {
 		cl.s.broadcastMessage(cl.conn)
-
 	} else {
 		cl.sendMessage(EMPTY_MESSAGE_ERROR)
 	}
