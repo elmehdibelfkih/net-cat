@@ -9,6 +9,7 @@ import (
 var LINUX_LOGO []byte
 var LOGS_FILE *os.File
 
+const MAX_CLIENT = 10
 const MAX_NAME_LEN = 25
 const MAX_LENGTH_MESSGE = 256
 const LOGO_FILE_PATH = "./data/linux.logo"

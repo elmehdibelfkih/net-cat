@@ -35,7 +35,7 @@ func (s *Server) StartServer() error {
 func (s *Server) acceptNewConnection() error {
 	for {
 		conn, err := s.listener.Accept()
-		if s.clientCounter < 10 {
+		if s.clientCounter < MAX_CLIENT {
 			s.clientCounterMutex.Lock()
 			s.clientCounter++
 			s.clientCounterMutex.Unlock()
