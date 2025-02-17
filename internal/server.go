@@ -63,6 +63,10 @@ func (s *Server) handleConnection(conn net.Conn) {
 			s.clients[conn].endConnection()
 			return
 		} else {
+			err := MessageValid(buf[:byteReaded])
+			if err != nil {
+				s.clients[conn].sendMessage(fmt.Sprintf("%v\n", err))
+			}
 			s.clients[conn].Message += string(buf[:byteReaded])
 			if strings.Contains(s.clients[conn].Message, "\n") {
 				s.clients[conn].isReady = true
@@ -71,10 +75,10 @@ func (s *Server) handleConnection(conn net.Conn) {
 		if s.clients[conn].isReady {
 			s.clients[conn].handleInput()
 			if s.clients[conn].Name != "" {
-				s.clients[conn].sendMessage(s.clients[conn].getPrefix())
+				s.clients[conn].sendMessage(s.clients[conn].getPrefix()) // display to the client his input
 			}
-			s.clients[conn].Message = ""
-			s.clients[conn].isReady = false
+			s.clients[conn].Message = ""    //free the message field
+			s.clients[conn].isReady = false // wait the next \n to be send from the client
 		}
 	}
 }
@@ -86,11 +90,6 @@ func (s *Server) broadcastMessage(conn net.Conn) {
 	}
 	if !s.clients[conn].noPrefix {
 		message := s.clients[conn].FormatedMessage()
-		err := MessageValid(message) // check if the message has esc characters
-		if err != nil {
-			s.clients[conn].sendMessage("you enterd a control charachter\n")
-			return
-		}
 		fmt.Fprint(LOGS_FILE, message)
 	}
 	for cn, cl := range s.clients {
@@ -106,4 +105,11 @@ func (s *Server) broadcastMessage(conn net.Conn) {
 			}
 		}
 	}
+}
+
+func (s *Server) Shutdown() {
+	for conn := range s.clients {
+		conn.Close()
+	}
+	s.listener.Close()
 }

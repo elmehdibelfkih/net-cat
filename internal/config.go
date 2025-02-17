@@ -2,8 +2,8 @@ package internal
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"strconv"
 )
 
 var LINUX_LOGO []byte
@@ -28,18 +28,26 @@ func SetUp() string {
 	if len(os.Args) == 1 {
 		addr = "8989"
 	} else if len(os.Args) == 2 {
+		port, err := strconv.Atoi(os.Args[1])
+		if port == 0 || err != nil {
+			fmt.Println("you cannot use that port is either invalid or reserved by IANA!") // internet assigned numbers authourity
+			os.Exit(0)
+		}
 		addr = os.Args[1]
 	} else {
-		log.Fatal("[USAGE]: ./TCPChat $port")
- 	}
+		fmt.Println("[USAGE]: ./TCPChat $port")
+		os.Exit(0)
+	}
 	tmp, err := os.ReadFile(LOGO_FILE_PATH)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(0)
 	}
 	LINUX_LOGO = tmp
 	logs, err := os.Create(LOGS_FILE_PATH)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(0)
 	}
 	LOGS_FILE = logs
 	return addr

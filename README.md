@@ -28,7 +28,7 @@ The implementation closely follows the behavior of the original `nc` (NetCat) sy
 ---
 
 ## Members
-- Said Oubaaisse
+
 - Larbi Mergaoui
 - El Mehdi Belfkih
 
@@ -132,6 +132,12 @@ Lee has left our chat...
 ├── main.go
 └── README.md    # Project documentation
 ```
+
+## ports
+  - 0 OR 0000....0 is denied
+  - 1–1023 (rootmode only)
+  - 1024–49151
+  - 49152–65535
 
 ---
 
