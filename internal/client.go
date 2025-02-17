@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"io"
 	"net"
 	"os"
@@ -54,6 +55,7 @@ func (cl *Client) sendMessage(message string) {
 func (cl *Client) endConnection() {
 	cl.s.clientCounterMutex.Lock()
 	cl.s.clientCounter--
+	fmt.Println(cl.s.clientCounter)
 	cl.s.clientCounterMutex.Unlock()
 	if cl.s.nextProtoErr == io.EOF {
 		cl.Message = cl.Name + " has left our chat...\n"

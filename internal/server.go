@@ -17,7 +17,7 @@ type Server struct {
 }
 
 func NewServer(addr string) *Server {
-	server := Server{Addr: addr, clients: make(map[net.Conn]*Client)}
+	server := Server{Addr: addr, clients: make(map[net.Conn]*Client, MAX_CLIENT)}
 	return &server
 }
 
@@ -38,6 +38,7 @@ func (s *Server) acceptNewConnection() error {
 		if s.clientCounter < MAX_CLIENT {
 			s.clientCounterMutex.Lock()
 			s.clientCounter++
+			fmt.Println(s.clientCounter)
 			s.clientCounterMutex.Unlock()
 			s.clients[conn] = &Client{s: s, conn: conn}
 			if err != nil {
