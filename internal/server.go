@@ -38,7 +38,6 @@ func (s *Server) acceptNewConnection() error {
 		if s.clientCounter < MAX_CLIENT {
 			s.clientCounterMutex.Lock()
 			s.clientCounter++
-			fmt.Println(s.clientCounter)
 			s.clientCounterMutex.Unlock()
 			s.clients[conn] = &Client{s: s, conn: conn}
 			if err != nil {
@@ -53,6 +52,7 @@ func (s *Server) acceptNewConnection() error {
 }
 
 func (s *Server) handleConnection(conn net.Conn) {
+	// TODO: add a go routine that listen in the stdin for the exit command then execute Shutdown() function
 	defer conn.Close()
 	buf := make([]byte, 2048)
 	conn.Write(LINUX_LOGO)

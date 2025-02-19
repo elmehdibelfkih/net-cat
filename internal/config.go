@@ -28,7 +28,7 @@ func SetUp() string {
 	if len(os.Args) == 1 {
 		addr = "8989"
 	} else if len(os.Args) == 2 {
-		port, err := strconv.Atoi(os.Args[1])
+		port, err := strconv.Atoi(os.Args[1]) // TODO: strconv is forbidden package
 		if port == 0 || err != nil {
 			fmt.Println("you cannot use that port is either invalid or reserved by IANA!") // internet assigned numbers authourity
 			os.Exit(0)
