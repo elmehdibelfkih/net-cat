@@ -22,8 +22,6 @@ The implementation closely follows the behavior of the original `nc` (NetCat) sy
   - Error handling for both server and client sides.
 - **Default Port Handling**: If no port is specified, the server runs on port **8989**.
 - **Go Concurrency**: Utilizes **Go-routines**, and **mutexes** for efficient concurrent handling.
-<!-- - **Testing**: Recommended to include **unit tests** for both server and client connections. -->
-<!-- channels -->
 
 ---
 

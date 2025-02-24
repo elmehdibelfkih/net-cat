@@ -26,7 +26,7 @@ func (s *Server) StartServer() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("Listening on the port :", s.Addr)
+	fmt.Println("Listening on the port :", ln.Addr().String())
 	defer ln.Close()
 	s.listener = ln
 	return s.acceptNewConnection()
@@ -52,7 +52,6 @@ func (s *Server) acceptNewConnection() error {
 }
 
 func (s *Server) handleConnection(conn net.Conn) {
-	// TODO: add a go routine that listen in the stdin for the exit command then execute Shutdown() function
 	defer conn.Close()
 	buf := make([]byte, 2048)
 	conn.Write(LINUX_LOGO)
@@ -67,19 +66,21 @@ func (s *Server) handleConnection(conn net.Conn) {
 			err := MessageValid(buf[:byteReaded])
 			if err != nil {
 				s.clients[conn].sendMessage(fmt.Sprintf("%v\n", err))
-			}
-			s.clients[conn].Message += string(buf[:byteReaded])
-			if strings.Contains(s.clients[conn].Message, "\n") {
-				s.clients[conn].isReady = true
+				s.clients[conn].sendMessage(s.clients[conn].getPrefix())
+			} else {
+				s.clients[conn].Message += string(buf[:byteReaded])
+				if strings.Contains(s.clients[conn].Message, "\n") {
+					s.clients[conn].isReady = true
+				}
 			}
 		}
 		if s.clients[conn].isReady {
 			s.clients[conn].handleInput()
 			if s.clients[conn].Name != "" {
-				s.clients[conn].sendMessage(s.clients[conn].getPrefix()) // display to the client his input
+				s.clients[conn].sendMessage(s.clients[conn].getPrefix())
 			}
-			s.clients[conn].Message = ""    //free the message field
-			s.clients[conn].isReady = false // wait the next \n to be send from the client
+			s.clients[conn].Message = ""
+			s.clients[conn].isReady = false
 		}
 	}
 }
